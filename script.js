@@ -18,38 +18,20 @@ let currentAudio = null;
 const buttons = document.querySelectorAll('.btn');
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        // If there is already audio playing, stop it
         if (currentAudio) {
             currentAudio.pause();
-            currentAudio.currentTime = 0; // Reset the audio to the beginning
+            currentAudio.currentTime = 0;
         }
-
-        // Get the sound file name from the button's data-sound attribute
         const soundFile = button.getAttribute('data-sound');
         currentAudio = playSound(soundFile);
     });
 });
 
-// Stop button to pause the audio
+// Stop button
 const stopButton = document.querySelector('.stop');
 stopButton.addEventListener('click', () => {
     if (currentAudio) {
         currentAudio.pause();
-        currentAudio.currentTime = 0; // Reset the audio to the beginning
+        currentAudio.currentTime = 0;
     }
 });
-
-// Optional: Cypress test mock to handle audio playback for testing
-if (typeof Cypress !== 'undefined') {
-    Cypress.on('uncaught:exception', (err) => {
-        // Prevent test from failing if audio fails to load
-        if (err.message.includes("Failed to load")) {
-            return false;
-        }
-    });
-
-    // Mock audio play for Cypress testing
-    cy.window().then((win) => {
-        cy.stub(win.Audio.prototype, 'play').as('playAudio');
-    });
-}
