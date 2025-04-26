@@ -1,29 +1,33 @@
-// Function to play sound
-function playSound(file) {
-    console.log(`Attempting to play: ${file}`);
-    const audio = new Audio(`sounds/${file}`);
-    
-    // Error handling for unsupported audio formats
-    audio.play().catch((err) => {
-        console.error('Error playing audio:', err);
-    });
-    
-    return audio;
-}
-
-// Variable to keep track of currently playing audio
 let currentAudio = null;
 
-// Add event listeners for each button
+// Function to play a sound
+function playSound(file) {
+    // Remove previous audio if exists
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio.remove();
+    }
+
+    // Create a new audio element
+    const audio = document.createElement('audio');
+    audio.src = `sounds/${file}`;
+    audio.setAttribute('autoplay', 'true');
+    audio.setAttribute('controls', 'true'); // optional: remove if you don't want control buttons
+
+    // Append the audio to the DOM
+    document.getElementById('buttons').appendChild(audio);
+
+    // Set as currently playing audio
+    currentAudio = audio;
+}
+
+// Add event listeners to all .btn buttons
 const buttons = document.querySelectorAll('.btn');
 buttons.forEach(button => {
     button.addEventListener('click', () => {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
-        }
         const soundFile = button.getAttribute('data-sound');
-        currentAudio = playSound(soundFile);
+        playSound(soundFile);
     });
 });
 
@@ -33,5 +37,7 @@ stopButton.addEventListener('click', () => {
     if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
+        currentAudio.remove();
+        currentAudio = null;
     }
 });
